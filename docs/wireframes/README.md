@@ -185,7 +185,7 @@ Caption: R4 (C7): The committee scanner can start online scanning at once or ena
 
 [![Figure 25](images/25-C02-online-scanning.png)](images/25-C02-online-scanning.png)
 
-Caption: R3 (C4, S8): Online scanning checks the student's current QR on the spot, records attendance once, and shows "Already recorded" with no extra points on a repeat scan.
+Caption: R3 (C4, C8, S8): Online scanning checks the student's current QR on the spot, records attendance once, shows "Already recorded" with no extra points on a repeat scan, and refuses an expired or wrong-event pass with a clear reason.
 
 ## Figure 26 · C03 · Scan attendance - Offline
 
