@@ -49,13 +49,13 @@ Caption: Key to the wireflows: arrow types, grey role labels, locked approved ev
 
 [![Figure 02](images/02-S01-sign-in.png)](images/02-S01-sign-in.png)
 
-Caption: R6 (S1): A student signs in with a university account and reaches Discover events, while a wrong username or password shows an error on the sign-in screen.
+Caption: R6 (S1): A student signs in with a university account and reaches Discover events, while a incorrect username or password shows an error on the sign-in screen.
 
 ## Figure 03 · S02.01 · Discover events: filter or view an event
 
 [![Figure 03](images/03-S02.01-discover-filter.png)](images/03-S02.01-discover-filter.png)
 
-Caption: R2 (S2): On Discover events a student searches, filters by date or club, or opens an event to see its details and the places left.
+Caption: R2 (S2): On Discover events a student searches, filters by date or club/society name or availablity, or opens an event to see its details and the places left.
 
 ## Figure 04 · S02.02 · Discover events: no results for a search
 
@@ -97,13 +97,13 @@ Caption: R2 (S12): A student offered a freed place accepts before the deadline, 
 
 [![Figure 10](images/10-S08.01-download-attendance-pass.png)](images/10-S08.01-download-attendance-pass.png)
 
-Caption: R3, R4 (S7, S9): While online the student downloads the attendance pass so it can be shown offline, and with no connection and no prepared pass a clear "pass unavailable" screen explains what to do.
+Caption: R3, R4 (S7, S9): While online the student downloads the attendance pass so it can be shown offline, and with no connection and no prepared pass a clear "pass unavailable" screen explains what needs to do.
 
 ## Figure 11 · S08.02 · Open the attendance pass
 
 [![Figure 11](images/11-S08.02-open-attendance-pass.png)](images/11-S08.02-open-attendance-pass.png)
 
-Caption: R3 (S7): At the event the student opens the attendance pass, which shows a time-limited QR code, a masked student ID and a screenshot block for the committee scanner.
+Caption: R3 (S7): At the event the student opens the attendance pass, which shows a time-limited QR code, a masked student ID and a screenshot block from the student phone screen.
 
 ## Figure 12 · S08.03 · Attendance pass - Rotation Time
 
@@ -151,13 +151,13 @@ Caption: R1 (C2, C5): An approved event is shown as locked, so the club cannot e
 
 [![Figure 19](images/19-M03-create-event-details.png)](images/19-M03-create-event-details.png)
 
-Caption: R1 (C1): A club event manager creates an event by filling in title, club, date, time, venue, capacity, points and registration deadline, then continues to the public event information.
+Caption: R1 (C1): A club event manager creates an event by filling in event details, then continues to the public event information screen.
 
 ## Figure 20 · M04 · Review submission
 
 [![Figure 20](images/20-M04-review-submission.png)](images/20-M04-review-submission.png)
 
-Caption: R1 (C1): Before submitting, the manager reviews the details and attached documents, and a failed submission keeps the entered details and uploads so nothing is lost.
+Caption: R1 (C1): Before submitting, the club event manager reviews the details and attached documents, and a failed submission keeps the entered details and uploads so nothing is lost.
 
 ## Figure 21 · M05.01 · Proposal status
 
@@ -169,7 +169,7 @@ Caption: R1 (C2, A1): The proposal status moves from Pending to Approved, after 
 
 [![Figure 22](images/22-M05.02-proposal-rejected.png)](images/22-M05.02-proposal-rejected.png)
 
-Caption: R1 (C2, A1): A rejected proposal shows the staff's reason to the club, and the manager can still open the submitted proposal.
+Caption: R1 (C2, A1): A rejected proposal shows the staff's reason to the club, and the club event manager can still open the submitted proposal.
 
 ## Figure 23 · M06 · Club analytics
 
@@ -187,13 +187,13 @@ Caption: R4 (C7): The committee scanner can start online scanning at once or ena
 
 [![Figure 25](images/25-C02-online-scanning.png)](images/25-C02-online-scanning.png)
 
-Caption: R3 (C4, C8, S8): Online scanning checks the student's current QR on the spot, records attendance once, shows "Already recorded" with no extra points on a repeat scan, and refuses an expired or wrong-event pass with a clear reason.
+Caption: R3 (C4, C8, S8): Online scanning checks the student's current attendance pass on the spot, records attendance once, shows "Already recorded" with no extra points on a repeat scan, and refuses an expired or wrong-event pass with a clear reason.
 
 ## Figure 26 · C03 · Scan attendance - Offline
 
 [![Figure 26](images/26-C03-offline-scanning.png)](images/26-C03-offline-scanning.png)
 
-Caption: R3, R4 (C7): Offline scanning checks the QR against the data downloaded earlier and saves the attendance on the scanner as pending upload and verification, with no points awarded yet.
+Caption: R3, R4 (C7): Offline scanning checks the attendance pass against the data downloaded earlier and saves the attendance on the scanner as pending upload and verification, with no points awarded yet.
 
 ## Figure 27 · C04 · Request manual attendance review
 
