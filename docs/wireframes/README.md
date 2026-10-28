@@ -4,6 +4,8 @@ Low-fidelity wireflows for the student, club event manager, committee scanner an
 
 Click an image to view it at full size.
 
+Story IDs in the captions (for example S3, C4, A1) refer to the user stories in Requirements-Analysis-part1; screen codes (for example S03, C02) name the wireframe screens.
+
 | Figure | Panel | Title | Requirement | Image |
 | --- | --- | --- | --- | --- |
 | 01 | Legend | Legend | - | [Figure 01](images/01-legend.png) |
@@ -197,7 +199,7 @@ Caption: R3, R4 (C7): Offline scanning checks the QR against the data downloaded
 
 [![Figure 27](images/27-C04-manual-attendance-request.png)](images/27-C04-manual-attendance-request.png)
 
-Caption: R3, R4 (story to be added): When a student cannot show a pass, the committee member records the reason and identity check in a manual attendance request, which is submitted if online or stored on the device if offline, and no points are given before review.
+Caption: R3, R4 (C9): When a student cannot show a pass, the committee member records the reason and identity check in a manual attendance request, which is submitted if online or stored on the device if offline, and no points are given before review.
 
 ## Figure 28 · C05 · Pending uploads
 
@@ -209,10 +211,10 @@ Caption: R4 (C7, S10): Pending uploads lists the records saved on the scanner, u
 
 [![Figure 29](images/29-R01-requests-for-review.png)](images/29-R01-requests-for-review.png)
 
-Caption: R5, R6 (story to be added): Only an authorised reviewer can open the list of requests for review, where each pending manual request is shown before it is opened.
+Caption: R5, R6 (C10): Only an authorised reviewer can open the list of requests for review, where each pending manual request is shown before it is opened.
 
 ## Figure 30 · R02 · Review request
 
 [![Figure 30](images/30-R02-review-request.png)](images/30-R02-review-request.png)
 
-Caption: R5, R6 (story to be added): The authorised reviewer records the evidence and reason and then confirms or rejects the attendance, with points credited once after the event ends only if it is confirmed, or escalates to Admin.
+Caption: R5, R6 (C10, C11): The authorised reviewer records the evidence and reason and then confirms or rejects the attendance, with points credited once after the event ends only if it is confirmed, or escalates to Admin.
