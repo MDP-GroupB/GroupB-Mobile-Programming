@@ -1,7 +1,5 @@
 package com.groupb.scpd.domain.checkin
 
-import java.time.Duration
-import java.time.Instant
 
 /**
  * The rule for when scanning is allowed, relative to an event's start time.
@@ -10,9 +8,15 @@ import java.time.Instant
 
 // opens 10 minutes before the event starts, closes 30 minutes after (could be modified later)
 
+//In milliseconds
 object CheckInWindow {
-    private val OPENS_BEFORE: Duration = Duration.ofMinutes(10)
-    private val CLOSES_AFTER: Duration = Duration.ofMinutes(30)
+    const val OPENS_BEFORE: Long = 10 * 60 * 1000L  // 600,000 millis = 10 min
+    const val CLOSES_AFTER: Long = 30 * 60 * 1000L  // 1,800,000 millis = 30 min
+
+    /** Timestamp (epoch millis) when check-in opens (T - 10 min). */
+    fun opensAtMillis(eventStart: Long): Long = eventStart - OPENS_BEFORE
+    /** Timestamp (epoch millis) when check-in closes (T + 30 min). */
+    fun closesAtMillis(eventStart: Long): Long = eventStart + CLOSES_AFTER
 
     /**
      * @param eventStart the event's official start time
@@ -22,9 +26,9 @@ object CheckInWindow {
 
     // The eventStart time is provided by the event data (set when the event is created)
 
-    fun isOpen(eventStart: Instant, now: Instant): Boolean {
-        val opensAt = eventStart.minus(OPENS_BEFORE)  // Opening time = event start time - opening window
-        val closesAt = eventStart.plus(CLOSES_AFTER) // Closing time = event start time + closing window
-        return now >= opensAt && now <= closesAt
+    fun isOpen(eventStart: Long, now: Long): Boolean {
+        val opensAt = opensAtMillis(eventStart)
+        val closesAt = closesAtMillis(eventStart)
+        return now in opensAt until closesAt
     }
 }

@@ -3,11 +3,12 @@ package com.groupb.scpd.domain.checkin
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.time.Instant
 
 class CheckInWindowTest {
 
-    private val eventStart = Instant.parse("2026-11-20T18:00:00Z")
+    private fun minutes(value: Long): Long = value * 60_000L
+
+    private val eventStart = minutes(1000)
 
     @Test
     fun `scan exactly at event start is allowed`() {
@@ -16,25 +17,31 @@ class CheckInWindowTest {
 
     @Test
     fun `scan 10 minutes before start is allowed`() {
-        val now = eventStart.minusSeconds(10 * 60)
+        val now = eventStart - minutes(10)
         assertTrue(CheckInWindow.isOpen(eventStart, now))
     }
 
     @Test
     fun `scan 11 minutes before start is rejected`() {
-        val now = eventStart.minusSeconds(11 * 60)
+        val now = eventStart - minutes(11)
         assertFalse(CheckInWindow.isOpen(eventStart, now))
     }
 
     @Test
-    fun `scan 30 minutes after start is allowed`() {
-        val now = eventStart.plusSeconds(30 * 60)
+    fun `scan just before 30 minutes after start is allowed`() {
+        val now = eventStart + minutes(30) - 1L
         assertTrue(CheckInWindow.isOpen(eventStart, now))
     }
 
     @Test
+    fun `scan exactly 30 minutes after start is rejected`() {
+        val now = eventStart + minutes(30)
+        assertFalse(CheckInWindow.isOpen(eventStart, now))
+    }
+
+    @Test
     fun `scan 31 minutes after start is rejected`() {
-        val now = eventStart.plusSeconds(31 * 60)
+        val now = eventStart + minutes(31)
         assertFalse(CheckInWindow.isOpen(eventStart, now))
     }
 }
