@@ -1,6 +1,7 @@
+package com.groupb.scpd.domain.booking
 
-package com.groupb.scpd.booking
-
+import com.groupb.scpd.domain.booking.BookingRules
+import com.groupb.scpd.domain.booking.Event
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test

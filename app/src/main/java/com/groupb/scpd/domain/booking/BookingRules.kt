@@ -1,4 +1,4 @@
-package com.groupb.scpd.booking
+package com.groupb.scpd.domain.booking
 
 object BookingRules {
 
