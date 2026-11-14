@@ -1,11 +1,150 @@
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
-    // TEMPORARY (week 1-2): any signed-in user can read and write.
-    // Replaced by the real rules in step 12
-    match /{document=**} {
-      allow read, write: if request.auth != null;
+
+    // ================= Helpers =================
+
+    function signedIn() {
+      return request.auth != null;
+    }
+    function myUid() {
+      return request.auth.uid;
+    }
+    // The signed-in user's own users/{uid} record (role, managedClubId).
+    function me() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    // The club this user manages, or null if they manage none.
+    function managedClub() {
+      return me().get('managedClubId', null);
+    }
+    function isManager() {
+      return signedIn() && managedClub() != null;
+    }
+    function isManagerOf(clubId) {
+      return signedIn() && managedClub() == clubId;
+    }
+    // The field names an update changes.
+    function changedKeys() {
+      return request.resource.data.diff(resource.data).affectedKeys();
+    }
+
+    // ================= Event helpers =================
+
+    // Every field an event may have (see the Firestore schema doc).
+    function onlyEventFields(d) {
+      return d.keys().hasOnly(['clubId', 'clubName', 'createdBy', 'title',
+        'description', 'venue', 'startTime', 'endTime', 'bookingCutoff',
+        'checkinOpens', 'checkinCloses', 'capacity', 'bookedCount',
+        'requestedPoints', 'points', 'documentsUploaded', 'status',
+        'reviewNote', 'decidedBy', 'decidedAt', 'createdAt', 'submittedAt']);
+    }
+
+    // A proposal ready for Admin: every required field present and sensible.
+    function completeProposal(d) {
+      return d.title is string && d.title.size() > 0 && d.title.size() <= 100
+        && d.description is string && d.description.size() <= 2000
+        && d.venue is string && d.venue.size() > 0
+        && d.clubName == get(/databases/$(database)/documents/clubs/$(d.clubId)).data.name
+        && d.startTime is timestamp && d.startTime > request.time
+        && d.endTime is timestamp && d.endTime > d.startTime
+        && d.bookingCutoff == d.startTime - duration.value(15, 'm')
+        && d.checkinOpens == d.startTime - duration.value(10, 'm')
+        && d.checkinCloses == d.startTime + duration.value(30, 'm')
+        && d.capacity is int && d.capacity >= 1
+        && d.requestedPoints is int && d.requestedPoints >= 0
+        && d.documentsUploaded is bool
+        && d.submittedAt == request.time;
+    }
+
+    // What a manager may save: a draft (may be incomplete) or a full submission.
+    function validManagerSave(d) {
+      return onlyEventFields(d)
+        && isManagerOf(d.clubId)
+        && d.bookedCount == 0
+        && (d.status == 'draft' || (d.status == 'pending' && completeProposal(d)));
+    }
+
+    // ================= users =================
+    // Each user reads only their own record. Only Admin writes (console).
+    match /users/{uid} {
+      allow get: if signedIn() && myUid() == uid;
+      allow list, write: if false;
+    }
+
+    // ================= directory =================
+    // Managers look up ONE student by exact email; nobody can list them all.
+    match /directory/{email} {
+      allow get: if isManager();
+      allow list, write: if false;
+    }
+
+    // ================= clubs =================
+    match /clubs/{clubId} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+
+    // ================= events (R1) =================
+    match /events/{eventId} {
+      // Students see approved or cancelled events; managers also see their club's others.
+      allow read: if signedIn()
+        && (resource.data.status in ['approved', 'cancelled']
+            || isManagerOf(resource.data.clubId));
+
+      // C1: a manager creates a draft or submits straight away.
+      allow create: if signedIn()
+        && validManagerSave(request.resource.data)
+        && request.resource.data.createdBy == myUid()
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.get('points', null) == null
+        && request.resource.data.get('reviewNote', null) == null
+        && request.resource.data.get('decidedBy', null) == null
+        && request.resource.data.get('decidedAt', null) == null;
+
+      // C1/C2: edit a draft, or fix and resubmit a rejected proposal.
+      // Pending and approved events are locked (R1: no change after approval).
+      allow update: if signedIn()
+        && resource.data.status in ['draft', 'rejected']
+        && validManagerSave(request.resource.data)
+        && !changedKeys().hasAny(['clubId', 'createdBy', 'createdAt', 'bookedCount',
+             'points', 'reviewNote', 'decidedBy', 'decidedAt']);
+
+      // Booking counter (Area B): +1 or -1, before the cut-off, never above capacity.
+      // Step 16 ties this to the booking written in the same transaction.
+      allow update: if signedIn()
+        && resource.data.status == 'approved'
+        && request.time < resource.data.bookingCutoff
+        && changedKeys().hasOnly(['bookedCount'])
+        && request.resource.data.bookedCount >= 0
+        && request.resource.data.bookedCount <= resource.data.capacity
+        && (request.resource.data.bookedCount == resource.data.bookedCount + 1
+            || request.resource.data.bookedCount == resource.data.bookedCount - 1);
+
+      // A manager may delete only their own club's drafts.
+      allow delete: if signedIn()
+        && resource.data.status == 'draft'
+        && isManagerOf(resource.data.clubId);
+
+      // TEMPORARY until steps 16-17: team, bookings, attendance, waitlist, revisions.
+      match /{subcollection}/{docId} {
+        allow read, write: if signedIn();
+      }
+    }
+
+    // My bookings and My SCPD points: each student reads only their own.
+    match /{path=**}/bookings/{bookingId} {
+      allow read: if signedIn() && resource.data.userId == myUid();
+    }
+    match /{path=**}/attendance/{recordId} {
+      allow read: if signedIn() && resource.data.userId == myUid();
+    }
+
+    // ================= pointReversals (A3) =================
+    // Admin adds them in the console; a student reads only their own.
+    match /pointReversals/{reversalId} {
+      allow read: if signedIn() && resource.data.userId == myUid();
+      allow write: if false;
     }
   }
 }
