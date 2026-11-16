@@ -3,7 +3,10 @@ package com.groupb.scpd.ui.signin
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.groupb.scpd.data.AuthRepository
-import com.groupb.scpd.data.FirebaseAuthRepository
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.groupb.scpd.ScpdApp
 import com.groupb.scpd.data.model.UserProfile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +25,7 @@ data class SignInUiState(
 )
 
 class SignInViewModel(
-    private val repository: AuthRepository = FirebaseAuthRepository(),
+    private val repository: AuthRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SignInUiState())
@@ -60,5 +63,12 @@ class SignInViewModel(
         // The exact wording from Part 1 story S1.
         const val MSG_WRONG_DETAILS = "Check your university username and password."
         const val MSG_OFFLINE = "No internet connection. Connect and try again."
+        // Builds the ViewModel with the repository from the AppContainer.
+        val Factory = viewModelFactory {
+            initializer {
+                val app = this[APPLICATION_KEY] as ScpdApp
+                SignInViewModel(app.container.authRepository)
+            }
+        }
     }
 }
