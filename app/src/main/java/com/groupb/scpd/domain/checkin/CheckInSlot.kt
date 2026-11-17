@@ -20,10 +20,10 @@ object CheckInSlot {
      *         before check-in opens or after it closes
      */
     fun slotIndexFor(checkinOpensAt: Long, now: Long): Int? {
-        val elapsedMillis = now - checkinOpensAt
-        if (elapsedMillis < 0L) return null
-        val slot = (elapsedMillis / SLOT_DURATION_MILLIS).toInt()
-        return if (slot in 0 until TOTAL_SLOTS) slot else null
+        val elapsedMillis = now - checkinOpensAt  // check how much time passed in millis
+        if (elapsedMillis < 0L) return null  // return null if elapsed is -ve which means scan happened before checkin time
+        val slot = (elapsedMillis / SLOT_DURATION_MILLIS).toInt()  // how we calculate slots. We divide the time elapsed by the duration of one slot.
+        return if (slot in 0 until TOTAL_SLOTS) slot else null // If the slot number is between 0 and 119, return the slot number else return null.
     }
 
     /**
@@ -35,15 +35,21 @@ object CheckInSlot {
         now: Long,
         candidateSlot: Int
     ): Boolean {
-        if (candidateSlot !in 0 until TOTAL_SLOTS) return false
-        val currentSlot = slotIndexFor(checkinOpensAt, now) ?: return false
+        if (candidateSlot !in 0 until TOTAL_SLOTS) return false // if the slot num not in range return false
+        val currentSlot = slotIndexFor(checkinOpensAt, now) ?: return false // if check-in hasnt started or has closed, this function rejects the candidate slot
 
-        if (candidateSlot == currentSlot) return true
+        //above func basically means:
+        // val currentSlot = slotIndexFor(checkinOpensAt, now)
+        //
+        //if (currentSlot == null) {
+        //    return false
+        //}
 
+        if (candidateSlot == currentSlot) return true  // if the users slot matches our current slot then its accepted
         val elapsedMillis = now - checkinOpensAt
+        // Calculate how far into the current slot we are
         val millisIntoCurrentSlot = elapsedMillis % SLOT_DURATION_MILLIS
-        return millisIntoCurrentSlot < GRACE_PERIOD_MILLIS &&
-                candidateSlot == currentSlot - 1 &&
-                candidateSlot >= 0
+        // checks 3 conditions to return true
+        return millisIntoCurrentSlot < GRACE_PERIOD_MILLIS && candidateSlot == currentSlot - 1 && candidateSlot >= 0
     }
 }
