@@ -6,6 +6,7 @@ package com.groupb.scpd.domain.checkin
  * and the scanner screen's colour/message all read from this one list.
  */
 sealed interface ScanResult {
+
     /** Green: the code matched a booking and this student hasn't been scanned before. */
     data class Valid(
         val userId: String,

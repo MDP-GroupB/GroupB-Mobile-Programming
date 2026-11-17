@@ -26,9 +26,11 @@ object CheckInWindow {
 
     // The eventStart time is provided by the event data (set when the event is created)
 
+    /** take when the event opens at and when it closes at and check if the time now is inside the window.
+     *  return either true: time inside window  or false: time outside window */
     fun isOpen(eventStart: Long, now: Long): Boolean {
-        val opensAt = opensAtMillis(eventStart)
-        val closesAt = closesAtMillis(eventStart)
+        val opensAt = opensAtMillis(eventStart)  // take when the event opens at
+        val closesAt = closesAtMillis(eventStart)  // take when the event closes at
         return now in opensAt until closesAt
     }
 }
