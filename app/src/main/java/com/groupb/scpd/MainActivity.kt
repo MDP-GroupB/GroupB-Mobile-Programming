@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.groupb.scpd.ui.theme.SCPDTheme
-
+import com.groupb.scpd.domain.pass.PassScreen
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,10 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             SCPDTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    PassScreen(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
