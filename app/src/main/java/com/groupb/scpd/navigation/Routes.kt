@@ -6,4 +6,5 @@ object Routes {
     const val STUDENT_HOME = "student_home" // Area B: Discover events
     const val CLUB_HOME = "club_home"       // Area A: Manage events
     const val SCANNER_HOME = "scanner_home" // Area D: Scanner
+    const val PASS = "pass"                 // Area C: Pass QR screen
 }
