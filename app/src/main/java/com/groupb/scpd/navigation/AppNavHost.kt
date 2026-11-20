@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.groupb.scpd.ui.common.PlaceholderScreen
+import com.groupb.scpd.ui.booking.DiscoverScreen
 
 /** The app's map of screens. Real screens replace the placeholders area by area. */
 @Composable
@@ -21,7 +22,9 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
                 ),
             )
         }
-        composable(Routes.STUDENT_HOME) { PlaceholderScreen("Discover events (Area B)") }
+        composable(Routes.STUDENT_HOME) {
+            DiscoverScreen()
+        }
         composable(Routes.CLUB_HOME) { PlaceholderScreen("Manage events (Area A)") }
         composable(Routes.SCANNER_HOME) { PlaceholderScreen("Scanner (Area D)") }
     }
