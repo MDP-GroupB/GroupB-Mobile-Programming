@@ -15,10 +15,10 @@ The s-CPD platform is an Android application designed to help students discover 
 
 ### Part 1 — Requirements and Analysis
 
-1. [Requirements Analysis](docs/requirements-analysis.md)
-2. [Challenges and Assumptions](docs/challenges-assumptions.md)
-3. [Technical Design](docs/technical-design.md)
-4. [User Interface Design](docs/ui-design.md)
+1. [Requirements Analysis](docs/part1/requirements-analysis.md)
+2. [Challenges and Assumptions](docs/part1/challenges-assumptions.md)
+3. [Technical Design](docs/part1/technical-design.md)
+4. [User Interface Design](docs/part1/ui-design.md)
 
 ### Part 2 — Implementation
 - [Firestore schema](docs/part2/firestore-schema.md)
