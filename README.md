@@ -49,4 +49,7 @@ Add a row whenever you add a library, or use a tutorial or example code.
 | Firebase CLI (firebase-tools) | Deploying and testing Security Rules | A | MIT |
 | JUnit 4 | Unit tests | All | EPL 1.0 |
 | AndroidX Test / Espresso | UI tests | All | Apache 2.0 |
-| ZXing core (planned) | Drawing the pass QR code | C | Apache 2.0 |
+| ZXing core | Drawing the pass QR code | C | Apache 2.0 |
+| Room | Offline scanner storage | D | Apache 2.0 |
+| KSP (Kotlin Symbol Processing) | Generating Room's database code | D | Apache 2.0 |
+| kotlinx-coroutines-test | Testing ViewModels and coroutines | D | Apache 2.0 |
