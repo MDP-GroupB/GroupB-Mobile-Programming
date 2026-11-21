@@ -84,12 +84,13 @@ fun PassScreen(
                 slot = currentSlot,
                 secretSeed = secretSeed
             )
-            val bitmap = withContext(Dispatchers.Default) {
-                generateQrBitmap(payload)
+            if (payload != currentPayload) {
+                currentPayload = payload
+                qrBitmap = withContext(Dispatchers.Default) {
+                    generateQrBitmap(payload)
+                }
             }
 
-            currentPayload = payload
-            qrBitmap = bitmap
             timeLeft = remainingInSlot
 
             val afterWorkMillis = System.currentTimeMillis()
