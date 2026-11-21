@@ -8,3 +8,6 @@ data class UserProfile(
     val role: String = "student",       // "student" or "admin"
     val managedClubId: String? = null,  // set by admin for event managers
 )
+
+val UserProfile.isAdmin: Boolean get() = role =="admin"
+val UserProfile.isManager: Boolean get() = managedClubId != null
