@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.CancellationException
 import java.io.IOException
 
 /** Everything the sign-in screen shows. */
@@ -46,7 +47,9 @@ class SignInViewModel(
             try {
                 val profile = repository.signIn(current.email, current.password)
                 _state.update { it.copy(loading = false, profile = profile) }
-            } catch (e: IOException) {
+            }catch (e: CancellationException) {
+                throw e
+            }catch (e: IOException) {
                 _state.update { it.copy(loading = false, error = MSG_OFFLINE) }
             } catch (e: Exception) {
                 _state.update { it.copy(loading = false, error = MSG_WRONG_DETAILS) }

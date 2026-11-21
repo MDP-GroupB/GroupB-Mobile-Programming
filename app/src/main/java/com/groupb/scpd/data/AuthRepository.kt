@@ -3,6 +3,7 @@ package com.groupb.scpd.data
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.groupb.scpd.data.model.UserProfile
 import kotlinx.coroutines.tasks.await
 import java.io.IOException
@@ -27,13 +28,22 @@ class FirebaseAuthRepository(
         try {
             val result = auth.signInWithEmailAndPassword(email.trim().lowercase(), password).await()
             val uid = result.user?.uid ?: throw IllegalStateException("No user")
-            // The role lives in users/{uid}; the Security Rules let a user read only their own profile.
-            val snapshot = db.collection("users").document(uid).get().await()
-            return snapshot.toObject(UserProfile::class.java)
-                ?: throw IllegalStateException("No user record for this account")
+            try {
+                // The role lives in users/{uid}; the Security Rules let a user read only their own profile.
+                val snapshot = db.collection("users").document(uid).get().await()
+                return snapshot.toObject(UserProfile::class.java)
+                    ?: throw IllegalStateException("No user record for this account")
+            } catch (e: Exception) {
+                auth.signOut()   // signed in to Auth but no usable profile: don't stay half signed in
+                throw e
+            }
         } catch (e: FirebaseNetworkException) {
-            throw IOException("No connection", e)   // No internet: re-throw as IOException so the ViewModel can show
-                                                    // "No internet connection" instead of "Check your password".
+            throw IOException("No connection", e)   // so the ViewModel shows the offline message
+        } catch (e: FirebaseFirestoreException) {
+            if (e.code == FirebaseFirestoreException.Code.UNAVAILABLE) {
+                throw IOException("No connection", e)   // Firestore offline: also the offline message
+            }
+            throw e
         }
     }
 

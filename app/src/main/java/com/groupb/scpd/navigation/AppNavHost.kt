@@ -26,6 +26,7 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
     fun goToSignIn() {
         navController.navigate(Routes.SIGN_IN) {
             popUpTo(navController.graph.id) { inclusive = true }   // clear every earlier screen
+            launchSingleTop = true   // never open sign-in twice
         }
     }
 
@@ -56,8 +57,7 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
                     onManageEvents = { navController.navigate(Routes.CLUB_HOME) },
                     onScanner = { navController.navigate(Routes.SCANNER_HOME) },
                     onSignOut = {
-                        signInViewModel.signOut()
-                        goToSignIn()
+                         signInViewModel.signOut()  // profile becomes null, so the check above goes to sign-in
                     },
                 )
             }
