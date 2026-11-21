@@ -2,7 +2,7 @@ package com.groupb.scpd.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -20,7 +20,7 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
     // One SignInViewModel for the whole app, built by its Factory (see AppContainer),
     // so Home can read the signed-in profile.
     val signInViewModel: SignInViewModel = viewModel(factory = SignInViewModel.Factory)
-    val signInState by signInViewModel.state.collectAsState()
+    val signInState by signInViewModel.state.collectAsStateWithLifecycle()
     val profile = signInState.profile
 
     fun goToSignIn() {

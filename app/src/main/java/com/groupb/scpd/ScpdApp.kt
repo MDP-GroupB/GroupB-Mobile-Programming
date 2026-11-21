@@ -5,5 +5,5 @@ import com.groupb.scpd.di.AppContainer
 
 /** Starts with the app and owns the one AppContainer. */
 class ScpdApp : Application() {
-    val container by lazy { AppContainer() }
+    val container by lazy { AppContainer(this) }
 }
