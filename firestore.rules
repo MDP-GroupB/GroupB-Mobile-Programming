@@ -126,10 +126,35 @@ service cloud.firestore {
         && resource.data.status == 'draft'
         && isManagerOf(resource.data.clubId);
 
-      // TEMPORARY until steps 16-17: team, bookings, attendance, waitlist, revisions.
-      match /{subcollection}/{docId} {
-        allow read, write: if signedIn();
-      }
+            // ---- Subcollections. Full checks (cut-off, capacity, hash, window) ----
+
+            // Bookings (Area B): a student may create or change only their OWN booking (doc ID = their uid).
+            // Reading stays open to signed-in users for now, so Area D's Prepare scanner can download the list.
+            match /bookings/{uid} {
+              allow read: if signedIn();
+              allow write: if signedIn() && myUid() == uid
+                && request.resource.data.userId == uid;
+            }
+
+            // Team (C3): only the manager of this event's club may add or remove members.
+            match /team/{email} {
+              allow read: if signedIn();
+              allow write: if isManagerOf(get(/databases/$(database)/documents/events/$(eventId)).data.clubId);
+            }
+
+            // Attendance (Area D): only a member of this event's team may create a record.
+            // Students can never write their own attendance (Part 1: no checking in from home).
+            // Records cannot be changed or deleted from the app.
+            match /attendance/{uid} {
+              allow read: if signedIn();
+              allow create: if signedIn()
+                && exists(/databases/$(database)/documents/events/$(eventId)/team/$(request.auth.token.email));
+            }
+
+            // TEMPORARY until the nice-to-haves are built: waitlist and revisions.
+            match /{subcollection}/{docId} {
+              allow read, write: if signedIn() && subcollection in ['waitlist', 'revisions'];
+            }
     }
 
     // My bookings and My SCPD points: each student reads only their own.
