@@ -34,3 +34,22 @@ The s-CPD platform is an Android application designed to help students discover 
 
 Each area works on its own branch (`area-a` … `area-d`), pushes weekly,
 and merges into `main` by pull request after review by another member.
+
+## Third-party libraries and sources
+
+Add a row whenever you add a library, or use a tutorial or example code.
+
+| Library / source | Used for | Area | Licence |
+|---|---|---|---|
+| AndroidX (Core, Activity, Lifecycle, ViewModel) | App components, ViewModels | All | Apache 2.0 |
+| Jetpack Compose + Material 3 | All screens | All | Apache 2.0 |
+| Navigation Compose | Moving between screens | A | Apache 2.0 |
+| Firebase Android SDK (Auth, Firestore) | Sign-in and shared data | All | Apache 2.0 |
+| kotlinx-coroutines-play-services | Awaiting Firebase calls | A | Apache 2.0 |
+| Firebase CLI (firebase-tools) | Deploying and testing Security Rules | A | MIT |
+| JUnit 4 | Unit tests | All | EPL 1.0 |
+| AndroidX Test / Espresso | UI tests | All | Apache 2.0 |
+| ZXing core | Drawing the pass QR code | C | Apache 2.0 |
+| Room | Offline scanner storage | D | Apache 2.0 |
+| KSP (Kotlin Symbol Processing) | Generating Room's database code | D | Apache 2.0 |
+| kotlinx-coroutines-test | Testing ViewModels and coroutines | D | Apache 2.0 |
