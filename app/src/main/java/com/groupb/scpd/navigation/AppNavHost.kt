@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.groupb.scpd.ui.common.PlaceholderScreen
 import com.groupb.scpd.ui.booking.DiscoverScreen
+import com.groupb.scpd.ui.scanner.PrepareScannerScreen
 import com.groupb.scpd.ui.home.HomeScreen
 import com.groupb.scpd.ui.signin.SignInScreen
 import com.groupb.scpd.ui.signin.SignInViewModel
@@ -85,23 +86,21 @@ fun AppNavHost(
             }
         }
 
-        // Area B - Your Discover Events screen
         composable(Routes.STUDENT_HOME) {
             DiscoverScreen()
         }
 
-        // Area A - Club management
         composable(Routes.CLUB_HOME) {
-            PlaceholderScreen(
-                title = "Manage events (Area A)"
+            PlaceholderScreen("Manage events (Area A)")
+        }
+
+        composable(Routes.SCANNER_HOME) {
+            PrepareScannerScreen(
+                onStartScanning = { _ ->
+                    // Scanner navigation will be added in Week 3
+                }
             )
         }
 
-        // Area D - Committee scanner
-        composable(Routes.SCANNER_HOME) {
-            PlaceholderScreen(
-                title = "Scanner (Area D)"
-            )
-        }
     }
 }
