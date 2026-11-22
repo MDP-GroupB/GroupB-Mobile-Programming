@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.groupb.scpd.ui.common.PlaceholderScreen
+import com.groupb.scpd.ui.scanner.PrepareScannerScreen
 import com.groupb.scpd.ui.home.HomeScreen
 import com.groupb.scpd.ui.signin.SignInScreen
 import com.groupb.scpd.ui.signin.SignInViewModel
@@ -64,6 +65,7 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
         }
         composable(Routes.STUDENT_HOME) { PlaceholderScreen("Discover events (Area B)") }
         composable(Routes.CLUB_HOME) { PlaceholderScreen("Manage events (Area A)") }
-        composable(Routes.SCANNER_HOME) { PlaceholderScreen("Scanner (Area D)") }
+        composable(Routes.SCANNER_HOME) { PrepareScannerScreen(onStartScanning = { _ -> // Week 3: navigate to QrScanScreen(eventId)
+        }) }
     }
 }
