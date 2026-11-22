@@ -1,15 +1,20 @@
 package com.groupb.scpd.ui.scanner
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.groupb.scpd.ScpdApp
 import com.groupb.scpd.data.scanner.ScannerRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 data class PrepareScannerUiState(
     val eventIdInput: String = "",
@@ -54,7 +59,7 @@ class PrepareScannerViewModel(
     fun prepareScanner() {
         val eventId = _uiState.value.eventIdInput.trim()
         if (eventId.isEmpty()) {
-            _uiState.update { it.copy(errorMessage = "Please enter an Event ID first.") }
+            _uiState.update { it.copy(errorMessage = MSG_EMPTY_EVENT_ID) }
             return
         }
 
@@ -71,24 +76,29 @@ class PrepareScannerViewModel(
                         statusMessage = "Ready for offline scanning: $count confirmed booking(s) cached."
                     )
                 }
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessage = e.message ?: "Failed to download bookings."
-                    )
-                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (_: SecurityException) {
+                _uiState.update { it.copy(isLoading = false, errorMessage = MSG_PERMISSION_DENIED) }
+            } catch (_: IOException) {
+                _uiState.update { it.copy(isLoading = false, errorMessage = MSG_OFFLINE) }
+            } catch (_: Exception) {
+                _uiState.update { it.copy(isLoading = false, errorMessage = MSG_GENERIC_ERROR) }
             }
         }
     }
 
     companion object {
-        fun provideFactory(repository: ScannerRepository): ViewModelProvider.Factory =
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return PrepareScannerViewModel(repository) as T
-                }
+        const val MSG_EMPTY_EVENT_ID = "Please enter an Event ID first."
+        const val MSG_PERMISSION_DENIED = "You're not on this event's team."
+        const val MSG_OFFLINE = "No internet connection."
+        const val MSG_GENERIC_ERROR = "Could not download bookings. Please try again."
+
+        val Factory = viewModelFactory {
+            initializer {
+                val app = this[APPLICATION_KEY] as ScpdApp
+                PrepareScannerViewModel(app.container.scannerRepository)
             }
+        }
     }
 }

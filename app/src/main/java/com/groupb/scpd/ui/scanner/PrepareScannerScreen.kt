@@ -15,35 +15,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.firebase.firestore.FirebaseFirestore
-import com.groupb.scpd.data.local.ScannerDatabase
-import com.groupb.scpd.data.scanner.FirestoreScannerRepository
 
 @Composable
 fun PrepareScannerScreen(
     modifier: Modifier = Modifier,
     onStartScanning: (String) -> Unit = {}
 ) {
-    val context = LocalContext.current
-    val repository = remember(context) {
-        val dao = ScannerDatabase.getInstance(context).scannerDao()
-        FirestoreScannerRepository(
-            firestore = FirebaseFirestore.getInstance(),
-            scannerDao = dao
-        )
-    }
-    val viewModel: PrepareScannerViewModel = viewModel(
-        factory = PrepareScannerViewModel.provideFactory(repository)
-    )
-    val uiState by viewModel.uiState.collectAsState()
+    val viewModel: PrepareScannerViewModel = viewModel(factory = PrepareScannerViewModel.Factory)
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     PrepareScannerContent(
         uiState = uiState,

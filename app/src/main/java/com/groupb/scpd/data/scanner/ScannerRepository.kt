@@ -7,6 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.firestore.FirebaseFirestoreException
+import java.io.IOException
 
 interface ScannerRepository {
     /** Downloads all confirmed bookings for [eventId] from Firestore and caches them in Room. */
@@ -25,7 +28,19 @@ class FirestoreScannerRepository(
         val trimmedId = eventId.trim()
         require(trimmedId.isNotEmpty()) { "Event ID cannot be empty" }
 
-        val documents = fetchConfirmedBookings(trimmedId)
+        val documents = try {
+            fetchConfirmedBookings(trimmedId)
+        } catch (e: FirebaseNetworkException) {
+            throw IOException("No connection", e)
+        } catch (e: FirebaseFirestoreException) {
+            when (e.code) {
+                FirebaseFirestoreException.Code.PERMISSION_DENIED ->
+                    throw SecurityException("Permission denied", e)
+                FirebaseFirestoreException.Code.UNAVAILABLE ->
+                    throw IOException("No connection", e)
+                else -> throw e
+            }
+        }
 
         val entities = documents.map { doc ->
             val userId = doc.getString("userId") ?: doc.id

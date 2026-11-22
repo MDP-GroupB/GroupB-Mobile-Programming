@@ -68,7 +68,7 @@ class PrepareScannerViewModelTest {
     }
 
     @Test
-    fun `prepareScanner shows error when repository fails`() = runTest {
+    fun `prepareScanner shows offline message when repository throws IOException`() = runTest {
         val fakeRepo = FakeScannerRepository().apply { shouldFail = true }
         val viewModel = PrepareScannerViewModel(fakeRepo)
 
@@ -76,7 +76,7 @@ class PrepareScannerViewModelTest {
         viewModel.prepareScanner()
 
         val state = viewModel.uiState.value
-        assertEquals("No network connection", state.errorMessage)
+        assertEquals(PrepareScannerViewModel.MSG_OFFLINE, state.errorMessage)
         assertNull(state.statusMessage)
     }
 
