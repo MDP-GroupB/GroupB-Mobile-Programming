@@ -1,4 +1,3 @@
-
 package com.groupb.scpd.navigation
 
 import androidx.compose.runtime.Composable
@@ -10,10 +9,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.groupb.scpd.ui.common.PlaceholderScreen
 import com.groupb.scpd.ui.booking.DiscoverScreen
-import com.groupb.scpd.ui.scanner.PrepareScannerScreen
+import com.groupb.scpd.ui.common.PlaceholderScreen
 import com.groupb.scpd.ui.home.HomeScreen
+import com.groupb.scpd.ui.pass.PassScreen
+import com.groupb.scpd.ui.scanner.PrepareScannerScreen
 import com.groupb.scpd.ui.signin.SignInScreen
 import com.groupb.scpd.ui.signin.SignInViewModel
 
@@ -73,6 +73,9 @@ fun AppNavHost(
                     onDiscover = {
                         navController.navigate(Routes.STUDENT_HOME)
                     },
+                    onPass = {
+                        navController.navigate(Routes.PASS)
+                    },
                     onManageEvents = {
                         navController.navigate(Routes.CLUB_HOME)
                     },
@@ -102,5 +105,8 @@ fun AppNavHost(
             )
         }
 
+        composable(Routes.PASS) {
+            PassScreen()
+        }
     }
 }

@@ -23,6 +23,7 @@ import com.groupb.scpd.data.model.isManager
 fun HomeScreen(
     profile: UserProfile,
     onDiscover: () -> Unit,
+    onPass: () -> Unit,
     onManageEvents: () -> Unit,
     onScanner: () -> Unit,
     onSignOut: () -> Unit,
@@ -39,6 +40,7 @@ fun HomeScreen(
         } else {
             Text("Student ID ${profile.maskedId}")
             Button(onClick = onDiscover, modifier = Modifier.fillMaxWidth()) { Text("Discover events") }
+            Button(onClick = onPass, modifier = Modifier.fillMaxWidth()) { Text("My pass") }
             if (profile.isManager) {
                 Button(onClick = onManageEvents, modifier = Modifier.fillMaxWidth()) { Text("Manage events") }
             }
