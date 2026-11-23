@@ -73,6 +73,9 @@ fun AppNavHost(
                     onDiscover = {
                         navController.navigate(Routes.STUDENT_HOME)
                     },
+                    onPass = {
+                        navController.navigate(Routes.PASS)
+                    },
                     onManageEvents = {
                         navController.navigate(Routes.CLUB_HOME)
                     },
