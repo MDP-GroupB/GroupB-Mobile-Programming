@@ -6,10 +6,48 @@
 The s-CPD platform is an Android application designed to help students discover approved activities, book places, record attendance and track their earned points. It also allows clubs to manage events and the s-CPD office to review event proposals.
 
 ## Team Members
-- Ahmed Gobran ([@Ahmedgobran](https://github.com/Ahmedgobran))
-- Yew Xin Nie ([@NekomaPizza10](https://github.com/NekomaPizza10))
-- Lishuai ([@yllnaf](https://github.com/yllnaf))
-- Zheng Kai Qi ([@Zheng123-AA](https://github.com/Zheng123-AA))
+
+| Name | GitHub | Area |
+|---|---|---|
+| Yew Xin Nie | [@NekomaPizza10](https://github.com/NekomaPizza10) | A: Foundation, security, club side |
+| Lishuai | [@yllnaf](https://github.com/yllnaf) | B: Student booking |
+| Zheng Kai Qi | [@Zheng123-AA](https://github.com/Zheng123-AA) | C: Pass, points, reviewer |
+| Ahmed Gobran | [@Ahmedgobran](https://github.com/Ahmedgobran) | D: Committee scanner |
+
+## Getting started
+
+### How to build and run
+
+1. Install the latest stable **Android Studio**.
+2. Clone this repository and open the project folder in Android Studio (**File › Open**). Wait for **Gradle sync** to finish.
+   `app/google-services.json` is included, so the app connects to our Firebase project (`mdp-scpd-groupb`) with no extra setup.
+3. Create the test emulator: **Device Manager › + › Create Virtual Device › Pixel 2**, with a system image of **Android 12 (API 31) or higher**.
+4. Select the Pixel 2 emulator and click **Run ▶** (app module).
+5. The app needs an internet connection to sign in.
+
+### How to run the tests
+
+- **Unit tests** (run on your computer, no emulator): `./gradlew testDebugUnitTest` (on Windows: `.\gradlew testDebugUnitTest`)
+  Covers sign-in (ViewModel with a fake repository), booking rules (clash and cut-off), the pass code generator, the check-in window and slots, the QR code checker and the Prepare scanner ViewModel.
+- **Instrumented test** (needs the emulator running): `./gradlew connectedDebugAndroidTest`
+  Covers the scanner's Room database (`ScannerDaoTest`).
+
+### Test accounts
+
+These are throwaway test accounts in our Firebase project. Do not reuse these passwords anywhere.
+
+| Role | Email | Password    | What to try |
+|---|---|-------------|---|
+| Student | student1@example.com | `Test1234!` | Discover events, My pass |
+| Student | student2@example.com | `Test1234!`  | Same as student1 |
+| Event manager | manager@example.com | `Test1234!`  | Home shows Manage events (robotics-club) |
+| Committee member | committee@example.com | `Test1234!`  | Committee tools › Prepare scanner for `test-event-1` |
+| Reviewer | reviewer@example.com | `Test1234!`  | Reviewer screens come in the final release |
+| Admin | admin@example.com | `Test1234!`  | Admin work is done in the Firebase console |
+
+## Releases
+
+- [Release 2 — 24 Nov 2026](docs/releases/release-2.md): test data, what works and what's coming
 
 ## Project Documentation
 

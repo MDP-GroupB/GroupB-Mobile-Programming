@@ -94,15 +94,19 @@ fun AppNavHost(
         }
 
         composable(Routes.CLUB_HOME) {
-            PlaceholderScreen("Manage events (Area A)")
+            PlaceholderScreen("Manage events: coming in the final release")
         }
 
         composable(Routes.SCANNER_HOME) {
             PrepareScannerScreen(
                 onStartScanning = { _ ->
-                    // Scanner navigation will be added in Week 3
+                    navController.navigate(Routes.SCAN_SOON)   // real scan screen comes in the final release
                 }
             )
+        }
+
+        composable(Routes.SCAN_SOON) {
+            PlaceholderScreen("Scanning: coming in the final release. Offline preparation works now.")
         }
 
         composable(Routes.PASS) {
