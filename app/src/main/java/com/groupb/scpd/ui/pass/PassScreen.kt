@@ -143,7 +143,7 @@ fun PassScreen(
             ) {
                 Column(modifier = Modifier.padding(12.dp)) {
                     Text(
-                        text = "Current Payload (Debug):",
+                        text = "Test mode: sample pass, not linked to a booking yet",
                         style = MaterialTheme.typography.labelMedium
                     )
                     Spacer(modifier = Modifier.height(4.dp))
