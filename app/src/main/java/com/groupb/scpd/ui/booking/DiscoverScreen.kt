@@ -95,12 +95,18 @@ fun DiscoverScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .statusBarsPadding()   // keep content below the status bar (edge-to-edge)
             .padding(16.dp)
     ) {
-
         Text(
             text = "Discover Events",
             style = MaterialTheme.typography.headlineMedium
+        )
+
+        Text(
+            text = "Sample events. Live events and booking arrive in the final release.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         Spacer(modifier = Modifier.height(16.dp))
