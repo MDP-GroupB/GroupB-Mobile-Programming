@@ -8,5 +8,7 @@ object Routes {
     const val CLUB_HOME = "club_home"       // Area A: Manage events
     const val SCANNER_HOME = "scanner_home" // Area D: Scanner
     const val PASS = "pass"                 // Area C: Pass QR screen
-    const val SCAN_SOON = "scan_soon"       // Area D: shown until the scan screen arrives
+
+    const val SCAN = "scan/{eventId}"       // Area D: QR & paste-code scan screen
+    fun scanRoute(eventId: String): String = "scan/${android.net.Uri.encode(eventId)}"
 }

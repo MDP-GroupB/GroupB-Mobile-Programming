@@ -16,6 +16,7 @@ import com.groupb.scpd.ui.pass.PassScreen
 import com.groupb.scpd.ui.scanner.PrepareScannerScreen
 import com.groupb.scpd.ui.signin.SignInScreen
 import com.groupb.scpd.ui.signin.SignInViewModel
+import com.groupb.scpd.ui.scanner.ScanScreen
 
 @Composable
 fun AppNavHost(
@@ -99,14 +100,18 @@ fun AppNavHost(
 
         composable(Routes.SCANNER_HOME) {
             PrepareScannerScreen(
-                onStartScanning = { _ ->
-                    navController.navigate(Routes.SCAN_SOON)   // real scan screen comes in the final release
+                onStartScanning = { eventId ->
+                    navController.navigate(Routes.scanRoute(eventId))
                 }
             )
         }
 
-        composable(Routes.SCAN_SOON) {
-            PlaceholderScreen("Scanning: coming in the final release. Offline preparation works now.")
+        composable(Routes.SCAN) { backStackEntry ->
+            val eventId = backStackEntry.arguments?.getString("eventId").orEmpty()
+            ScanScreen(
+                eventId = eventId,
+                onBack = { navController.popBackStack() }
+            )
         }
 
         composable(Routes.PASS) {
