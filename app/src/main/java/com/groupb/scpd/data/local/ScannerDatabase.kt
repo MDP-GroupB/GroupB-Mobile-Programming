@@ -7,10 +7,11 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [
+        CachedEventEntity::class,
         CachedBookingEntity::class,
         PendingAttendanceEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class ScannerDatabase : RoomDatabase() {
@@ -27,7 +28,10 @@ abstract class ScannerDatabase : RoomDatabase() {
                     context.applicationContext,
                     ScannerDatabase::class.java,
                     "scpd_scanner.db"
-                ).build().also { INSTANCE = it }
+                )
+                    .fallbackToDestructiveMigration(dropAllTables = true)
+                    .build()
+                    .also { INSTANCE = it }
             }
         }
     }

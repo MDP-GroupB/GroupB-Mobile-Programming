@@ -58,4 +58,11 @@ interface ScannerDao {
 
     @Query("UPDATE pending_attendance SET syncState = :newState WHERE eventId = :eventId AND userId = :userId")
     suspend fun updateSyncState(eventId: String, userId: String, newState: String)
+
+    //-- Cached Event Metadata --
+    @Upsert
+    suspend fun upsertEvent(event: CachedEventEntity)
+
+    @Query("SELECT * FROM cached_events WHERE eventId = :eventId")
+    suspend fun getEvent(eventId: String): CachedEventEntity?
 }

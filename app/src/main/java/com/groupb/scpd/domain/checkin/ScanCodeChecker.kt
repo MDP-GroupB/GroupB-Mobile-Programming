@@ -1,6 +1,6 @@
 package com.groupb.scpd.domain.checkin
 
-import java.security.MessageDigest
+import com.groupb.scpd.domain.pass.CodeGenerator
 
 /**
  * representation of a downloaded booking row needed by the checker.
@@ -103,9 +103,5 @@ object ScanCodeChecker {
         )
     }
 
-    fun sha256Hex(input: String): String {
-        val bytes = MessageDigest.getInstance("SHA-256")
-            .digest(input.toByteArray(Charsets.UTF_8))
-        return bytes.joinToString("") { "%02x".format(it) }
-    }
+    fun sha256Hex(input: String): String = CodeGenerator.sha256(input)
 }
