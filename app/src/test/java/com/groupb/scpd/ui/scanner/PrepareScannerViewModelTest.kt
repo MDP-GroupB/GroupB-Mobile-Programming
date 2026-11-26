@@ -1,36 +1,19 @@
 package com.groupb.scpd.ui.scanner
 
+import com.groupb.scpd.data.local.CachedBookingEntity
+import com.groupb.scpd.data.local.CachedEventEntity
+import com.groupb.scpd.data.local.PendingAttendanceEntity
 import com.groupb.scpd.data.scanner.ScannerRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.groupb.scpd.testutil.MainDispatcherRule
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.TestDispatcher
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TestWatcher
-import org.junit.runner.Description
 import java.io.IOException
-
-@OptIn(ExperimentalCoroutinesApi::class)
-class MainDispatcherRule(
-    val dispatcher: TestDispatcher = UnconfinedTestDispatcher()
-) : TestWatcher() {
-    override fun starting(description: Description) {
-        Dispatchers.setMain(dispatcher)
-    }
-
-    override fun finished(description: Description) {
-        Dispatchers.resetMain()
-    }
-}
 
 private class FakeScannerRepository : ScannerRepository {
     var shouldFail = false
@@ -46,6 +29,14 @@ private class FakeScannerRepository : ScannerRepository {
     override fun observeCachedBookingCount(eventId: String): Flow<Int> {
         return counts.getOrPut(eventId) { MutableStateFlow(0) }
     }
+
+    override suspend fun getCachedEvent(eventId: String): CachedEventEntity? = null
+    override suspend fun getCachedBookings(eventId: String): List<CachedBookingEntity> = emptyList()
+    override suspend fun getRecordedUserIds(eventId: String): Set<String> = emptySet()
+    override suspend fun savePendingAttendance(record: PendingAttendanceEntity): Boolean = true
+    override fun observePendingAttendance(eventId: String): Flow<List<PendingAttendanceEntity>> =
+        MutableStateFlow(emptyList())
+    override fun currentScannerUid(): String = ""
 }
 
 class PrepareScannerViewModelTest {
