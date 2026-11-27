@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.services)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -69,5 +70,6 @@ dependencies {
     //
     implementation(libs.kotlinx.coroutines.play.services)
     implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.kotlinx.serialization.json)
 
 }

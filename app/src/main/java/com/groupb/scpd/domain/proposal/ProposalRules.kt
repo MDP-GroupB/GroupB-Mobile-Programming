@@ -1,5 +1,7 @@
 package com.groupb.scpd.domain.proposal
 
+import kotlinx.serialization.Serializable
+
 /** EPF 1.0 Event Type: the two allowed answers. `code` is what we save in Firestore; `label` is what the user sees. */
 enum class EventType(val code: String, val label: String) {
     ON_CAMPUS("on_campus", "On campus"),
@@ -21,6 +23,7 @@ enum class EventScale(val code: String, val label: String) {
  * Times are milliseconds since 1970, the same as Areas B and D use.
  * Empty fields are null, so a draft can be saved half-finished.
  */
+@Serializable   // lets ProposalDraftStore save the form as JSON on the phone
 data class ProposalDraft(
     // 1.0 Summary of event proposal
     val title: String = "",
