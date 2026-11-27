@@ -129,9 +129,13 @@ service cloud.firestore {
             // ---- Subcollections. Full checks (cut-off, capacity, hash, window) ----
 
             // Bookings (Area B): a student may create or change only their OWN booking (doc ID = their uid).
-            // Reading stays open to signed-in users for now, so Area D's Prepare scanner can download the list.
+            // Reading: a student reads their own booking; only members of this event's team
+            // can read the whole list (Area D's Prepare scanner). Part 1: scanning only for the event's committee.
             match /bookings/{uid} {
-              allow read: if signedIn();
+              allow read: if signedIn() && (
+                myUid() == uid
+                || exists(/databases/$(database)/documents/events/$(eventId)/team/$(request.auth.token.email))
+              );
               allow write: if signedIn() && myUid() == uid
                 && request.resource.data.userId == uid;
             }
