@@ -79,4 +79,57 @@ class BookingRulesTest {
             )
         )
     }
+
+    @Test
+    fun confirmedOverlappingBookingShouldClash() {
+        val newEvent = event("new", 900, 1020)
+        val existingBooking = Booking(
+            eventStart = minutes(840),
+            eventEnd = minutes(960),
+            status = "confirmed"
+        )
+
+        assertTrue(
+            BookingRules.hasConfirmedBookingClash(
+                newEvent,
+                listOf(existingBooking)
+            )
+        )
+    }
+
+    @Test
+    fun cancelledBookingShouldNotClash() {
+        val newEvent = event("new", 900, 1020)
+        val existingBooking = Booking(
+            eventStart = minutes(840),
+            eventEnd = minutes(960),
+            status = "cancelled"
+        )
+
+        assertFalse(
+            BookingRules.hasConfirmedBookingClash(
+                newEvent,
+                listOf(existingBooking)
+            )
+        )
+    }
+
+    @Test
+    fun nonOverlappingConfirmedBookingShouldNotClash() {
+        val newEvent = event("new", 900, 1020)
+        val existingBooking = Booking(
+            eventStart = minutes(840),
+            eventEnd = minutes(900),
+            status = "confirmed"
+        )
+
+        assertFalse(
+            BookingRules.hasConfirmedBookingClash(
+                newEvent,
+                listOf(existingBooking)
+            )
+        )
+    }
+
 }
+

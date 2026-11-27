@@ -16,6 +16,12 @@ import com.groupb.scpd.ui.pass.PassScreen
 import com.groupb.scpd.ui.scanner.PrepareScannerScreen
 import com.groupb.scpd.ui.signin.SignInScreen
 import com.groupb.scpd.ui.signin.SignInViewModel
+import androidx.activity.compose.BackHandler
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.groupb.scpd.domain.booking.Event
+import com.groupb.scpd.ui.booking.EventDetailsScreen
 
 @Composable
 fun AppNavHost(
@@ -89,9 +95,32 @@ fun AppNavHost(
             }
         }
 
+
         composable(Routes.STUDENT_HOME) {
-            DiscoverScreen()
+            var selectedEvent by remember {
+                mutableStateOf<Event?>(null)
+            }
+
+            BackHandler(enabled = selectedEvent != null) {
+                selectedEvent = null
+            }
+
+            val event = selectedEvent
+
+            if (event == null) {
+                DiscoverScreen(
+                    onEventClick = { selectedEvent = it }
+                )
+            } else {
+                EventDetailsScreen(
+                    event = event,
+                    onBack = { selectedEvent = null },
+                    onBook = {},
+                    bookingReady = false
+                )
+            }
         }
+
 
         composable(Routes.CLUB_HOME) {
             PlaceholderScreen("Manage events: coming in the final release")
