@@ -14,9 +14,12 @@ import androidx.compose.ui.unit.dp
 import com.groupb.scpd.domain.booking.Event
 import java.text.DateFormat
 import java.util.Date
+import androidx.compose.foundation.clickable
 
 @Composable
-fun DiscoverScreen() {
+fun DiscoverScreen(
+    onEventClick: (Event) -> Unit
+) {
 
     var searchQuery by remember { mutableStateOf("") }
     var selectedClub by remember { mutableStateOf("All clubs") }
@@ -161,10 +164,14 @@ fun DiscoverScreen() {
             ) {
                 items(filteredEvents, key = { it.id }) { event ->
 
+
                     Card(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onEventClick(event) }
                     ) {
-                        Column(
+
+                    Column(
                             modifier = Modifier.padding(16.dp)
                         ) {
 
