@@ -29,12 +29,14 @@ class FirebaseBookingRepository(
         return try {
             val eventRef = db.collection("events").document(eventId)
             val bookingRef = eventRef.collection("bookings").document(uid)
+            val scheduleRef = db.collection("bookingSchedules")
+                .document(uid)
 
             db.runTransaction { transaction ->
                 // Read all documents before writing.
                 val eventDoc = transaction.get(eventRef)
                 val bookingDoc = transaction.get(bookingRef)
-
+                val scheduleDoc = transaction.get(scheduleRef)
                 check(eventDoc.exists()) {
                     "Event not found"
                 }
@@ -73,6 +75,30 @@ class FirebaseBookingRepository(
                 val end = eventDoc.getTimestamp("endTime")
                     ?: error("Missing event end time")
 
+
+                val schedule = scheduleDoc.toObject(
+                    BookingSchedule::class.java
+                ) ?: error("Booking schedule not initialized")
+
+                check(schedule.userId == uid) {
+                    "Invalid booking schedule owner"
+                }
+
+                val startMillis = start.toDate().time
+                val endMillis = end.toDate().time
+
+                check(startMillis < endMillis) {
+                    "Invalid event time"
+                }
+
+                val hasConflict = schedule.confirmedEvents.any { booked ->
+                    startMillis < booked.endTimeMillis &&
+                            booked.startTimeMillis < endMillis
+                }
+
+                check(!hasConflict) {
+                    "You already have a booking at this time"
+                }
                 val bookingData = mapOf(
                     "userId" to uid,
                     "studentName" to studentName,
@@ -87,7 +113,16 @@ class FirebaseBookingRepository(
                 )
 
                 // Both writes are part of one atomic transaction.
+
+                val updatedSchedule = schedule.copy(
+                    confirmedEvents = schedule.confirmedEvents + ScheduledEvent(
+                        eventId = eventId,
+                        startTimeMillis = startMillis,
+                        endTimeMillis = endMillis
+                    )
+                )
                 transaction.set(bookingRef, bookingData)
+                transaction.set(scheduleRef, updatedSchedule)
                 transaction.update(
                     eventRef,
                     "bookedCount",
