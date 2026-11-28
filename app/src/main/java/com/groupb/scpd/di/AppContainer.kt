@@ -5,7 +5,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.groupb.scpd.data.AuthRepository
 import com.groupb.scpd.data.FirebaseAuthRepository
 import com.groupb.scpd.data.local.ScannerDatabase
+import com.groupb.scpd.data.proposal.FirestoreProposalRepository
 import com.groupb.scpd.data.proposal.ProposalDraftStore
+import com.groupb.scpd.data.proposal.ProposalRepository
 import com.groupb.scpd.data.scanner.FirestoreScannerRepository
 import com.groupb.scpd.data.scanner.ScannerRepository
 import java.io.File
@@ -15,10 +17,13 @@ class AppContainer(context: Context) {
     private val appContext: Context = context.applicationContext   // never an Activity (Storage lecture)
     val authRepository: AuthRepository by lazy { FirebaseAuthRepository() }
 
-    /** Area A: autosaved proposal forms, kept in the app's private files folder. */
+    /** Area A: autosaved proposal forms, kept in the app's private file folder. */
     val proposalDraftStore by lazy {
         ProposalDraftStore(File(appContext.filesDir, "proposal_drafts"))
     }
+
+    /** Area A: saves and loads club proposals in Firestore. */
+    val proposalRepository: ProposalRepository by lazy { FirestoreProposalRepository() }
 
     private val scannerDatabase: ScannerDatabase by lazy {
         ScannerDatabase.getInstance(appContext)
