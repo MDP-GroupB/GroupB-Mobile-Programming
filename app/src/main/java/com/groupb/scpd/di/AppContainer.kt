@@ -1,6 +1,7 @@
 package com.groupb.scpd.di
 
 import android.content.Context
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.groupb.scpd.data.AuthRepository
 import com.groupb.scpd.data.FirebaseAuthRepository
@@ -24,6 +25,9 @@ class AppContainer(context: Context) {
 
     /** Area A: saves and loads club proposals in Firestore. */
     val proposalRepository: ProposalRepository by lazy { FirestoreProposalRepository() }
+
+    /** The signed-in user's Firebase uid, or null. Wiring stays here, so ViewModels never touch Firebase. */
+    val currentUserId: () -> String? = { FirebaseAuth.getInstance().currentUser?.uid }
 
     private val scannerDatabase: ScannerDatabase by lazy {
         ScannerDatabase.getInstance(appContext)
