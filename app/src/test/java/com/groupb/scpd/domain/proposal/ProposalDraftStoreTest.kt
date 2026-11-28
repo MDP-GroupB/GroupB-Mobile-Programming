@@ -22,7 +22,7 @@ class ProposalDraftStoreTest {
         eventType = EventType.ON_CAMPUS,
         eventScale = EventScale.MINOR,
         targetAttendees = 30,
-        venue = "Robotics Lab, Block BB",
+        venue = "BB80",
         hasSafas = false,
         safasReason = "Small on-campus workshop for club members only.",
     )

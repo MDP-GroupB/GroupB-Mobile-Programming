@@ -21,7 +21,7 @@ class ProposalRulesTest {
         pricePerStudent = 0.0,
         startMillis = now + 50 * hour,        // 25 Nov 2026, 6:00 pm (Malaysia time)
         endMillis = now + 52 * hour,          // 25 Nov 2026, 8:00 pm
-        venue = "Room BB80",
+        venue = "BB80",
         backupVenue1 = "TCR 1 ",
         backupVenue2 = "F1A03",
         hasSafas = false,

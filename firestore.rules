@@ -31,31 +31,40 @@ service cloud.firestore {
 
     // ================= Event helpers =================
 
-    // Every field an event may have (see the Firestore schema doc).
-    function onlyEventFields(d) {
-      return d.keys().hasOnly(['clubId', 'clubName', 'createdBy', 'title',
-        'description', 'venue', 'startTime', 'endTime', 'bookingCutoff',
-        'checkinOpens', 'checkinCloses', 'capacity', 'bookedCount',
-        'requestedPoints', 'points', 'documentsUploaded', 'status',
-        'reviewNote', 'decidedBy', 'decidedAt', 'createdAt', 'submittedAt']);
-    }
+    // Every field an event may have (see the Firestore schema doc). Proposal holds the later proposal sections.
+        function onlyEventFields(d) {
+          return d.keys().hasOnly(['clubId', 'clubName', 'createdBy', 'title',
+            'eventType', 'eventScale', 'capacity', 'pricePerStudent',
+            'startTime', 'endTime', 'bookingCutoff', 'checkinOpens', 'checkinCloses',
+            'venue', 'backupVenues', 'hasSafas', 'safasReason', 'objectives', 'description',
+            'requestedPoints', 'proposal', 'bookedCount', 'points', 'status',
+            'reviewNote', 'decidedBy', 'decidedAt', 'createdAt', 'submittedAt']);
+        }
 
-    // A proposal ready for Admin: every required field present and sensible.
-    function completeProposal(d) {
-      return d.title is string && d.title.size() > 0 && d.title.size() <= 100
-        && d.description is string && d.description.size() <= 2000
-        && d.venue is string && d.venue.size() > 0
-        && d.clubName == get(/databases/$(database)/documents/clubs/$(d.clubId)).data.name
-        && d.startTime is timestamp && d.startTime > request.time
-        && d.endTime is timestamp && d.endTime > d.startTime
-        && d.bookingCutoff == d.startTime - duration.value(15, 'm')
-        && d.checkinOpens == d.startTime - duration.value(10, 'm')
-        && d.checkinCloses == d.startTime + duration.value(30, 'm')
-        && d.capacity is int && d.capacity >= 1
-        && d.requestedPoints is int && d.requestedPoints >= 0
-        && d.documentsUploaded is bool
-        && d.submittedAt == request.time;
-    }
+        // A proposal ready for Admin: Proposal 1.0, 1.1, 2.0 and 2.1 complete and sensible.
+            // The app checks word limits; the rules add a character cap as a safety net.
+            function completeProposal(d) {
+              return d.title is string && d.title.size() > 0 && d.title.size() <= 100
+                && d.eventType in ['on_campus', 'off_campus']
+                && d.eventScale in ['minor', 'major', 'high_risk', 'collaboration', 'csr']
+                && d.capacity is int && d.capacity >= 1
+                && d.pricePerStudent is number && d.pricePerStudent >= 0
+                && d.startTime is timestamp && d.startTime > request.time
+                && d.endTime is timestamp && d.endTime > d.startTime
+                && d.bookingCutoff == d.startTime - duration.value(15, 'm')
+                && d.checkinOpens == d.startTime - duration.value(10, 'm')
+                && d.checkinCloses == d.startTime + duration.value(30, 'm')
+                && d.venue is string && d.venue.size() > 0
+                && d.backupVenues is list && d.backupVenues.size() == 2
+                && d.hasSafas is bool
+                && (d.hasSafas || (d.safasReason is string && d.safasReason.size() > 0))
+                && d.objectives is string && d.objectives.size() > 0 && d.objectives.size() <= 300
+                && d.description is string && d.description.size() > 0 && d.description.size() <= 1500
+                && d.requestedPoints is int && d.requestedPoints >= 0
+                && d.clubName == get(/databases/$(database)/documents/clubs/$(d.clubId)).data.name
+                && d.submittedAt == request.time;
+            }
+
 
     // What a manager may save: a draft (may be incomplete) or a full submission.
     function validManagerSave(d) {
